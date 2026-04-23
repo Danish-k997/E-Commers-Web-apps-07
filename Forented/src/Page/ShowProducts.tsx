@@ -15,7 +15,8 @@ const AddToCart = () => {
   const [selectedImageIndex, setSelectedImageIndex] = useState(0);
   const [selectedSize, setSelectedSize] = useState("");
   const [quantity, setQuantity] = useState(1);
-  const { user } = useContext(ShopContext);
+  const  contex  = useContext(ShopContext);
+  const user = contex?.user;
   const userId = user?.id;
   const increaseQuantity = () => {
     setQuantity((prev) => prev + 1);
@@ -44,11 +45,15 @@ const AddToCart = () => {
 
   const handeladdToCart = () => { 
     if (!productData) return;
+    if (!userId) {
+      toast.error("Please login to add items to your cart.");
+      return;
+    }
     if (selectedSize === "") {
       toast.error("Please select a size before adding to cart.");
       return;
     }
-    addtoCart(userId, productData._id, quantity,)
+    addtoCart(userId, productData._id, quantity)
       .then((response) => {
         console.log("Product added to cart:", response.data); 
         toast.success("Product added to cart successfully!")
@@ -58,9 +63,7 @@ const AddToCart = () => {
       });
   }
 
-  const rawSizes =
-    productData?.sizes ??
-    (productData as ProductType & { size?: string[] })?.size;
+  const rawSizes: string[] | undefined = productData?.sizes ?? productData?.size;
   const availableSizes = Array.isArray(rawSizes)
     ? rawSizes.flatMap((item) =>
         typeof item === "string"
@@ -70,12 +73,7 @@ const AddToCart = () => {
               .filter(Boolean)
           : [],
       )
-    : typeof rawSizes === "string"
-      ? rawSizes
-          .split(/\s+/)
-          .map((value) => value.trim())
-          .filter(Boolean)
-      : [];
+    : [];
 
   if (!productData) {
     return (
@@ -179,7 +177,7 @@ const AddToCart = () => {
                     className="w-full rounded-xl border border-gray-300 bg-white px-4 py-3 text-sm text-gray-900 outline-none transition focus:border-orange-500 focus:ring-2 focus:ring-orange-100"
                   >
                     <option value="">Select a size</option>
-                    {availableSizes.map((size) => (
+                    {availableSizes.map((size: string) => (
                       <option key={size} value={size}>
                         {size}
                       </option>
