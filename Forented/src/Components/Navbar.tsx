@@ -61,7 +61,7 @@ const Navbar = () => {
             <NavLink to="/profile" className={({ isActive }) => isActive ? "text-orange-400 border-b-2 border-orange-400 pb-1 transition-all duration-300" : "hover:text-orange-300 transition-colors duration-200"}>
               Profile
             </NavLink>
-            {user?.role === "admin" && (<a href="http://localhost:5173" target="_blank" rel="noreferrer" className="hover:text-orange-300 transition-colors duration-200">
+            {user?.role === "admin" && (<a href="https://si-fi-store-admin-07-git-main-danish-khans-projects-32cebd46.vercel.app" target="_blank" rel="noreferrer" className="hover:text-orange-300 transition-colors duration-200">
               Admin Panel
             </a>)}
           </ul>
