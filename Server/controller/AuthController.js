@@ -116,7 +116,7 @@ export const forgotPassword = async (req, res) => {
   });
 
   // Reset link
-  const resetUrl = `http://localhost:5174/reset-password/${resetToken}`;
+  const resetUrl = `https://si-fi-store-07.vercel.app/reset-password/${resetToken}`;
 
    await transporter.sendMail({
     from: process.env.EMAIL,
