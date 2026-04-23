@@ -6,7 +6,6 @@ import Orderdetaile from "../Components/Orderdetaile.tsx";
 import { toast } from "react-toastify";
 
 
-
 const OrderSummery = () => {
   const context = useContext(ShopContext);
   const fetchAddress = context?.fetchAddress;
