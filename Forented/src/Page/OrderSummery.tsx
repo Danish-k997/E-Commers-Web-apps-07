@@ -129,7 +129,11 @@ const OrderSummery = () => {
             razorpay_order_id: response.razorpay_order_id,
             razorpay_signature: response.razorpay_signature,
             orderId: data.order._id,
-          });
+          }); 
+
+          if (!verifyResponse.data.success) {
+            toast.error("Payment verification failed");
+          }
             
           setCartItems?.((prev) =>
             prev.filter((item) => {
