@@ -1,5 +1,6 @@
 import { useContext, useMemo, useCallback } from "react";
-import { removeFromCart } from "../Servers/ProducteServer.ts";
+import { getAddresses, removeFromCart } from "../Servers/ProducteServer.ts";
+import { toast } from "react-toastify";
 
 import { ShopContext } from "../Context/ShopContext.tsx";
 import { Link, useNavigate } from "react-router";
@@ -22,6 +23,7 @@ const Cart = () => {
   const user = shopContext?.user as { id?: string } | null;
  
   const setCartItems = shopContext?.setCartItems;
+  const setSelectedItems = shopContext?.setSelectedItems;
   const navigate = useNavigate();
 
  const cartItems = useMemo(
@@ -56,17 +58,42 @@ const selectedItems = useMemo(
   }, [userId, setCartItems, selectedItems, toggleItemSelection]);
  
  
-  const handleOrderThis = useCallback((productId: string) => {
-    clearSelection?.();           // pehle purana selection saaf karo
-    toggleItemSelection?.(productId); // sirf yeh ek item select karo
-    navigate("/order-summary");   // ab order summary pe jao — NO STATE
-  }, [clearSelection, toggleItemSelection, navigate]);
+  const navigateToCheckoutByAddress = useCallback(async () => {
+    if (!userId) {
+      toast.error("Please login to continue.");
+      return;
+    }
+
+    try {
+      const response = await getAddresses(userId);
+      const addresses = response?.data?.addresses;
+      const hasAddress = Array.isArray(addresses) && addresses.length > 0;
+
+      if (hasAddress) {
+        navigate("/order-summary");
+      } else {
+        navigate("/address");
+      }
+    } catch (error) {
+      console.error("Failed to check address:", error);
+      toast.error("Unable to verify address. Please add your address.");
+      navigate("/address");
+    }
+  }, [userId, navigate]);
+
+  const handleOrderThis = useCallback(
+    async (productId: string) => {
+      setSelectedItems?.([productId]);
+      await navigateToCheckoutByAddress();
+    },
+    [setSelectedItems, navigateToCheckoutByAddress],
+  );
  
   
-  const handleOrderSelected = useCallback(() => {
+  const handleOrderSelected = useCallback(async () => {
     if (selectedItems.length === 0) return;
-    navigate("/order-summary");   // Context mein selectedItems pehle se hai
-  }, [selectedItems, navigate]);
+    await navigateToCheckoutByAddress();
+  }, [selectedItems, navigateToCheckoutByAddress]);
  
   // ✅ FIX 8: Select All toggle — saare selected hain toh clear, warna select all
   const handleSelectAll = useCallback(() => {
@@ -75,7 +102,11 @@ const selectedItems = useMemo(
       cartItems.every((item) =>
         selectedItems.includes(getProductId(item.productId)),
       );
-    allSelected ? clearSelection?.() : selectAllItems?.();
+    if (allSelected) {
+      clearSelection?.();
+    } else {
+      selectAllItems?.();
+    }
   }, [cartItems, selectedItems, clearSelection, selectAllItems]);
  
   // ✅ FIX 9: Sidebar mein SELECTED items ka total dikhao, na poori cart ka

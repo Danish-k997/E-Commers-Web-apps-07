@@ -18,6 +18,8 @@ const AddToCart = () => {
   const  contex  = useContext(ShopContext);
   const user = contex?.user;
   const userId = user?.id;
+  
+
   const increaseQuantity = () => {
     setQuantity((prev) => prev + 1);
   };
@@ -37,9 +39,9 @@ const AddToCart = () => {
     };
 
     fetchProducts();
-  }, []);   
+  }, []);    
+
   
- 
 
   const productData = product.find((productItem) => productItem._id === id); 
 
