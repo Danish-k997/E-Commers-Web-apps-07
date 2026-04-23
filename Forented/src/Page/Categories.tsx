@@ -41,7 +41,7 @@ const Categories = () => {
 
   // Price filter
   if (selectedPrice) {
-    const [min, max] = selectedPrice.split("-").map(Number);
+    const [min, max] = (selectedPrice as string).split("-").map(Number);
 
     filteredProducts = filteredProducts.filter(
       (item) => item.price >= min && item.price <= max,
