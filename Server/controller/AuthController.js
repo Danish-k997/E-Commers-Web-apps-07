@@ -68,8 +68,8 @@ if (!match) {
     
     res.cookie("token", token, {
       httpOnly: true,
-      secure: false, // production = true
-      sameSite: "lax",
+      secure: true, // production = true
+      sameSite: "none",
     });
 
     res.json({ success: true, token, message: "Login success" });
