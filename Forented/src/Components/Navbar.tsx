@@ -123,7 +123,9 @@ const Navbar = () => {
                 <FaSearch className="w-5 h-5" />
               </button>
               <button className="p-3 hover:bg-slate-700 rounded-full transition-colors duration-200 relative">
+              <Link to="/cart">
                 <FaShoppingCart className="w-5 h-5" />
+              </Link>
                 <span className="absolute -top-1 -right-1 bg-orange-500 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center">0</span>
               </button>
             </div>
